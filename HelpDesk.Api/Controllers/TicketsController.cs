@@ -20,14 +20,14 @@ namespace HelpDesk.Api.Controllers
     [ApiController]
     public class TicketsController : ControllerBase
     {
-        IHelpdeskService _helpdekService;
+        ITicketService _ticketService;
         ILogger<TicketsController> _logger;
         private IMapper _mapper;
-        public TicketsController(IHelpdeskService helpdekService, ILogger<TicketsController> logger, IMapper mapper)
+        public TicketsController(ITicketService ticketService, ILogger<TicketsController> logger, IMapper mapper)
         {
             _logger = logger;
             _mapper = mapper;
-            _helpdekService = helpdekService;
+            _ticketService = ticketService;
         }
         /// <summary>
         /// Get all tickets
@@ -39,7 +39,7 @@ namespace HelpDesk.Api.Controllers
         public ActionResult<IEnumerable<TicketModel>> Get()
         {
             _logger.LogInformation($"getting tickets ...");
-            var tickets = _helpdekService.GetTickets();
+            var tickets = _ticketService.GetTickets();
             if (tickets == null) NotFound();
             var ticketsModel = _mapper.Map<IEnumerable<TicketModel>>(tickets);
             return Ok(new { Tickets = ticketsModel });
@@ -58,7 +58,7 @@ namespace HelpDesk.Api.Controllers
             // No model state validation code here in dotnet ore 2.1, hooray!
 
             _logger.LogInformation($"getting ticket by id= {id} ...");
-            var ticket = _helpdekService.GetTicketById(id);
+            var ticket = _ticketService.GetTicketById(id);
             if (ticket == null) return NotFound();
             var ticketModel = _mapper.Map<TicketModel>(ticket);
             return Ok(new { Ticket = ticketModel });
@@ -74,7 +74,7 @@ namespace HelpDesk.Api.Controllers
         public ActionResult Post([FromBody] TicketModel ticketModel)
         {
             var ticket = _mapper.Map<Ticket>(ticketModel);
-            ticket = _helpdekService.AddTicket(ticket);
+            ticket = _ticketService.AddTicket(ticket);
             if (ticket == null) return BadRequest();
             return CreatedAtAction("Get", new { id = ticket.ID }, ticket);
         }
@@ -94,7 +94,7 @@ namespace HelpDesk.Api.Controllers
 
             var ticket = _mapper.Map<Ticket>(ticketModel);
 
-            var updatedTicket = _helpdekService.UpdateTicket(id, ticket);
+            var updatedTicket = _ticketService.UpdateTicket(id, ticket);
 
             if (updatedTicket == null) return NotFound();
 
@@ -113,7 +113,7 @@ namespace HelpDesk.Api.Controllers
         {
             if (id < 0) return BadRequest();
 
-            var ticket = _helpdekService.DeleteTicket(id);
+            var ticket = _ticketService.DeleteTicket(id);
             if (ticket == null) return NotFound();
             return new NoContentResult();
         }

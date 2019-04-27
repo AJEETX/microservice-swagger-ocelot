@@ -31,7 +31,7 @@ namespace HelpDesk.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApiJwtAuthorize((context) => true);
-            services.AddScoped<IHelpdeskService, HelpdeskService>();
+            services.AddScoped<ITicketService, TicketService>();
             services.AddDbContext<Database>(context => { context.UseInMemoryDatabase("HelpDesk"); });
             services.AddAutoMapper(typeof(Startup));
             services.AddCors();

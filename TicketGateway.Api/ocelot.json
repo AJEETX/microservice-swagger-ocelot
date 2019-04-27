@@ -1,0 +1,31 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/identity/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 60000
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/{url}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Post", "Delete", "Options" ]
+    },
+    {
+      "DownstreamPathTemplate": "/helpdesk/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 65000
+        }
+      ],
+      "UpstreamPathTemplate": "/helpdesk/{url}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Post", "Delete", "Options" ]
+    }
+  ],
+  
+  "GlobalConfiguration": {
+  }
+}

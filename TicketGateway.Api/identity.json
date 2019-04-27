@@ -1,0 +1,164 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "v1",
+    "title": "Identity",
+    "description": "create, verify,delete customer ",
+    "contact": {
+      "name": "Identity",
+      "url": "github.com/ajeetx",
+      "email": "ajeetx@email.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:61000/identity",
+      "description": "The http identity microservice API server"
+    },
+    {
+      "url": "https://localhost:61001/identity",
+      "description": "The http identity microservice API server"
+    }
+  ],
+  "paths": {
+    "/Customers": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Get all customers",
+        "operationId": "Authorize-microserviceCustomersGet",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Customers/login": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Customer login",
+        "operationId": "Authorize-microserviceCustomersLoginPost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginModel"
+              }
+            }
+          },
+          "description": "Model"
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Customers/create": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Customer register",
+        "operationId": "Authorize-microserviceCustomersCreatePost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerModel"
+              }
+            }
+          },
+          "description": "Model"
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/Customers/{userName}": {
+      "delete": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Delete a customer",
+        "operationId": "Authorize-microserviceCustomersByEmailDelete",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CustomerModel": {
+        "description": "CustomerModel",
+        "type": "object",
+        "properties": {
+          "userName": {
+            "description": "UserName",
+            "type": "string"
+          }
+        }
+      },
+      "LoginModel": {
+        "description": "LoginModel",
+        "type": "object",
+        "properties": {
+          "userName": {
+            "description": "UserName",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

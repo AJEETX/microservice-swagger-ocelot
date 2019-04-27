@@ -1,0 +1,201 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "v1",
+    "title": "HelpDesk",
+    "description": "read, create, update helpdesk ticket",
+    "contact": {
+      "name": "HelpDesk",
+      "url": "github.com/ajeetx",
+      "email": "ajeetx@email.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:61000/helpdesk",
+      "description": "The http helpdesk microservice API server"
+    },
+    {
+      "url": "https://localhost:61001/helpdesk",
+      "description": "The https helpdesk microservice API server"
+    }
+  ],
+  "paths": {
+    "/Tickets": {
+      "get": {
+        "tags": [
+          "HelpDesk"
+        ],
+        "summary": "Get all tickets",
+        "operationId": "Helpdesk-microserviceHelpDeskGet",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TicketModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HelpDesk"
+        ],
+        "summary": "Post a new ticket",
+        "operationId": "Helpdesk-microserviceHelpDeskPost",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/TicketModel"
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/Tickets/{id}": {
+      "get": {
+        "tags": [
+          "HelpDesk"
+        ],
+        "summary": "Get a specific ticket",
+        "operationId": "Helpdesk-microserviceHelpDeskByIdGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "HelpDesk"
+        ],
+        "summary": "Put to modify a ticket",
+        "operationId": "Helpdesk-microserviceHelpDeskByIdPut",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/TicketModel"
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "HelpDesk"
+        ],
+        "summary": "Delete a ticket",
+        "operationId": "Helpdesk-microserviceHelpDeskByIdDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
+  "components": {
+    "requestBodies": {
+      "TicketModel": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TicketModel"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "name": "Authorization",
+        "in": "header",
+        "type": "apiKey",
+        "description": "Bearer Token"
+      }
+    },
+    "schemas": {
+      "TicketModel": {
+        "description": "Model",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Describe",
+            "type": "string"
+          },
+          "active": {
+            "description": "IsSure",
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

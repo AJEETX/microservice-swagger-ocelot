@@ -11,7 +11,29 @@ namespace helpdesk.api.test
         {
             get
             {
-                return new List<Ticket> { new Ticket { ID = 1, Name = "test ticket", Active = true } };
+                return new List<Ticket> { GetTicket };
+            }
+        }
+        internal static Ticket GetTicket
+        {
+            get
+            {
+                return new Ticket {Name= "test ticket",Active= true };
+            }
+        }
+
+        internal static IEnumerable<TicketModel> GetTestTicketModels
+        {
+            get
+            {
+                return new List<TicketModel> { GetTicketModel };
+            }
+        }
+        internal static TicketModel GetTicketModel
+        {
+            get
+            {
+                return new TicketModel { Name = "test ticket", Active = true };
             }
         }
     }

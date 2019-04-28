@@ -46,6 +46,10 @@ The overall objective of the applications :
 
 > Run the solution by pressing they key `F5`
  
+### To-do
+
+> Run in docker
+
 ### Support or Contact
 
 Having any trouble? Please read out this [documentation](https://github.com/AJEETX/microservice-swagger-ocelot/blob/master/README.md) or [contact](mailto:ajeetx@email.com) and to sort it out.

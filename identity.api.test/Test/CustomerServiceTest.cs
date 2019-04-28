@@ -13,7 +13,7 @@ namespace identity.api.test
 {
     public class CustomerServiceTest
     {
-        [Fact(DisplayName = "AddCustomer adds customer")]
+        [Fact(DisplayName = "CustomerService_AddCustomer adds customer")]
         public async Task AddCustomer_adds_customer()
         {
             //given

@@ -102,7 +102,7 @@ namespace HelpDesk.Api.Service
             {
                 _logger.LogInformation($"Updating Ticket...");
                 ticketInDB = _context.Tickets.FirstOrDefault(i => i.ID == id);
-                if (ticketInDB == null) return null;
+                if (ticketInDB == null) return ticketInDB;
                 ticketInDB.Active = ticket.Active;
                 ticketInDB.Name = ticket.Name;
                 _context.Tickets.Update(ticketInDB);

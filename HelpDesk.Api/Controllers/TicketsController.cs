@@ -36,13 +36,13 @@ namespace HelpDesk.Api.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<TicketModel>>> Get()
+        public async Task<IActionResult> Get()
         {
             _logger.LogInformation($"getting tickets ...");
             var tickets = await _ticketService.GetTickets();
             if (tickets == null) NotFound();
             var ticketsModel = _mapper.Map<IEnumerable<TicketModel>>(tickets);
-            return Ok(new { Tickets = ticketsModel });
+            return Ok(ticketsModel);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace HelpDesk.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<TicketModel>> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             // No model state validation code here in dotnet ore 2.1, hooray!
 
@@ -61,7 +61,7 @@ namespace HelpDesk.Api.Controllers
             var ticket = await _ticketService.GetTicketById(id);
             if (ticket == null) return NotFound();
             var ticketModel = _mapper.Map<TicketModel>(ticket);
-            return Ok(new { Ticket = ticketModel });
+            return Ok(ticketModel);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace HelpDesk.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Post([FromBody] TicketModel ticketModel)
+        public async Task<IActionResult> Post([FromBody] TicketModel ticketModel)
         {
             var ticket = _mapper.Map<Ticket>(ticketModel);
             ticket = await _ticketService.AddTicket(ticket);
@@ -88,19 +88,19 @@ namespace HelpDesk.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Put(int id, [FromBody] TicketModel ticketModel)
+        public async Task<IActionResult> Put(int id, [FromBody] TicketModel ticketModel)
         {
             if (id < 0) return BadRequest();
 
             var ticket = _mapper.Map<Ticket>(ticketModel);
 
-            var updatedTicket = _ticketService.UpdateTicket(id, ticket);
+            var updatedTicket =await _ticketService.UpdateTicket(id, ticket);
 
             if (updatedTicket == null) return NotFound();
 
             ticketModel = _mapper.Map<TicketModel>(updatedTicket);
 
-            return Ok(new { Ticket = ticketModel });
+            return Ok(ticketModel );
         }
         /// <summary>
         /// Delete a ticket

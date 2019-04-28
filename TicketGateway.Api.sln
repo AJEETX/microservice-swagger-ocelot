@@ -17,9 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "helpdesk", "helpdesk", "{A6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identity", "identity", "{32695A29-65D2-4EAC-A6D7-8B770A6CC535}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "helpdesk.api.test", "helpdesk.api.test\helpdesk.api.test.csproj", "{48BF43E7-E557-4FF0-AE9D-F7A6243FEB6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "helpdesk.api.test", "helpdesk.api.test\helpdesk.api.test.csproj", "{48BF43E7-E557-4FF0-AE9D-F7A6243FEB6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "identity.api.test", "identity.api.test\identity.api.test.csproj", "{1B9C1386-6D48-4B4B-9366-09535324C372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "identity.api.test", "identity.api.test\identity.api.test.csproj", "{1B9C1386-6D48-4B4B-9366-09535324C372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

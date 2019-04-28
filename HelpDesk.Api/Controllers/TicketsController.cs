@@ -36,10 +36,10 @@ namespace HelpDesk.Api.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<TicketModel>> Get()
+        public async Task<ActionResult<IEnumerable<TicketModel>>> Get()
         {
             _logger.LogInformation($"getting tickets ...");
-            var tickets = _ticketService.GetTickets();
+            var tickets = await _ticketService.GetTickets();
             if (tickets == null) NotFound();
             var ticketsModel = _mapper.Map<IEnumerable<TicketModel>>(tickets);
             return Ok(new { Tickets = ticketsModel });
@@ -53,12 +53,12 @@ namespace HelpDesk.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Get(int id)
+        public async Task<ActionResult<TicketModel>> Get(int id)
         {
             // No model state validation code here in dotnet ore 2.1, hooray!
 
             _logger.LogInformation($"getting ticket by id= {id} ...");
-            var ticket = _ticketService.GetTicketById(id);
+            var ticket = await _ticketService.GetTicketById(id);
             if (ticket == null) return NotFound();
             var ticketModel = _mapper.Map<TicketModel>(ticket);
             return Ok(new { Ticket = ticketModel });
@@ -71,10 +71,10 @@ namespace HelpDesk.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult Post([FromBody] TicketModel ticketModel)
+        public async Task<ActionResult> Post([FromBody] TicketModel ticketModel)
         {
             var ticket = _mapper.Map<Ticket>(ticketModel);
-            ticket = _ticketService.AddTicket(ticket);
+            ticket = await _ticketService.AddTicket(ticket);
             if (ticket == null) return BadRequest();
             return CreatedAtAction("Get", new { id = ticket.ID }, ticket);
         }
@@ -109,11 +109,11 @@ namespace HelpDesk.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             if (id < 0) return BadRequest();
 
-            var ticket = _ticketService.DeleteTicket(id);
+            var ticket = await _ticketService.DeleteTicket(id);
             if (ticket == null) return NotFound();
             return new NoContentResult();
         }

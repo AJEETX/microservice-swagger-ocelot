@@ -42,13 +42,24 @@ namespace Identity.Api.Controllers
         [HttpGet(Name = "get-customers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<CustomerModel>> Get()
+        public async Task<ActionResult<IEnumerable<CustomerModel>>> Get()
         {
-            _logger.LogInformation($"getting customers ...");
-            var customers = _customerService.GetCustomers();
-            if (customers == null) NotFound();
-            var customersModel = _mapper.Map<IEnumerable<CustomerModel>>(customers);
-            return Ok(new { Customers = customersModel });
+            string message = string.Empty;
+            try
+            {
+                _logger.LogInformation($"getting customers ...");
+                var customers = await _customerService.GetCustomers();
+                if (customers == null) NotFound();
+                var customersModel = _mapper.Map<IEnumerable<CustomerModel>>(customers);
+                return Ok(new { Customers = customersModel });
+            }
+            catch (Exception)
+            {
+                message = $"Errored .... shout";
+                _logger.LogInformation(message);
+                return StatusCode(500);
+            }
+
         }
         /// <summary>
         /// Customer login
@@ -59,31 +70,40 @@ namespace Identity.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("login")]
-        public ActionResult Login([FromBody]LoginModel loginModel)
+        public async Task<ActionResult> Login([FromBody]LoginModel loginModel)
         {
             // No model state validation code here in dotnet ore 2.1, hooray!
             string message = string.Empty;
-            var login = _mapper.Map<Login>(loginModel);
-            var userIsValid = _customerService.Login(login);
-            message = $"{loginModel.UserName} login！";
-            _logger.LogInformation(message);
-            if (userIsValid)
+            try
             {
-                var claims = new Claim[] {
+                var login = _mapper.Map<Login>(loginModel);
+                var userIsValid = await _customerService.Login(login);
+                message = $"{loginModel.UserName} login！";
+                _logger.LogInformation(message);
+                if (userIsValid)
+                {
+                    var claims = new Claim[] {
                     new Claim(ClaimTypes.Name, loginModel.UserName),
                     new Claim(ClaimTypes.Role, "admin"),
 
                 };
-                var token = _tokenBuilder.BuildJwtToken(claims);
-                message = $"{loginModel.UserName} login success，and generate token return";
-                _logger.LogInformation(message);
-                return Ok(token);
+                    var token = _tokenBuilder.BuildJwtToken(claims);
+                    message = $"{loginModel.UserName} login success，and generate token return";
+                    _logger.LogInformation(message);
+                    return Ok(token);
+                }
+                else
+                {
+                    message = $"{loginModel.UserName} login fails";
+                    _logger.LogInformation(message);
+                    return BadRequest(message);
+                }
             }
-            else
+            catch (AggregateException)
             {
-                message = $"{loginModel.UserName} login fails";
+                message = $"Errored .... shout";
                 _logger.LogInformation(message);
-                return BadRequest(message);
+                return StatusCode(500);
             }
         }
         /// <summary>
@@ -94,25 +114,34 @@ namespace Identity.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("create")]
-        public ActionResult Register([FromBody]CustomerModel customerModel)
+        public async Task<ActionResult> Register([FromBody]CustomerModel customerModel)
         {
             // No model state validation code here in dotnet core 2.1, hooray!
-
-            _logger.LogInformation($"{customerModel.UserName} register！");
-            var customer = _mapper.Map<Customer>(customerModel);
-
-            var createdCustomer = _customerService.AddCustomer(customer);
-            if (createdCustomer != null)
+            try
             {
-                _logger.LogInformation($"{customer.UserName} register success");
-                return CreatedAtAction("login", new { id = createdCustomer.ID }, createdCustomer);
+                _logger.LogInformation($"{customerModel.UserName} register！");
+                var customer = _mapper.Map<Customer>(customerModel);
+
+                var createdCustomer = await _customerService.AddCustomer(customer);
+                if (createdCustomer != null)
+                {
+                    _logger.LogInformation($"{customer.UserName} register success");
+                    return CreatedAtAction("login", new { id = createdCustomer.ID }, createdCustomer);
+                }
+                else
+                {
+                    string message = $"{customer.UserName} register failes";
+                    _logger.LogInformation(message);
+                    return BadRequest(message);
+                }
             }
-            else
+            catch (AggregateException)
             {
-                string message = $"{customer.UserName} register failes";
+                string message = $" Error .....shout";
                 _logger.LogInformation(message);
-                return BadRequest(message);
+                return StatusCode(500);
             }
+
         }
         /// <summary>
         /// Delete a customer
@@ -122,17 +151,25 @@ namespace Identity.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{userName}")]
-        public ActionResult Delete(string userName)
+        public async Task<ActionResult> Delete(string userName)
         {
             if (string.IsNullOrEmpty(userName)) return BadRequest();
 
+            try
+            {
+                var customer =await _customerService.DeleteCustomer(userName);
+                if (customer == null) return NotFound();
 
-            var customer = _customerService.DeleteCustomer(userName);
-            if (customer == null) return NotFound();
+                _logger.LogInformation($"deleted customer with userName : {userName}！");
 
-            _logger.LogInformation($"deleted customer with userName : {userName}！");
-
-            return Ok($"{userName} deleted !!!");
+                return Ok($"{userName} deleted !!!");
+            }
+            catch (AggregateException)
+            {
+                string message = $" Error .....shout";
+                _logger.LogInformation(message);
+                return StatusCode(500);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Identity.Api.Model;
 using Identity.Api.Persistence;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,45 +10,87 @@ namespace Identity.Api.Service
 {
     public interface ICustomerService
     {
-        IEnumerable<Customer> GetCustomers();
-        bool Login(Login login);
-        Customer AddCustomer(Customer customer);
-        Customer DeleteCustomer(string userName);
+        Task<IEnumerable<Customer>> GetCustomers();
+        Task<bool> Login(Login login);
+        Task<Customer> AddCustomer(Customer customer);
+        Task<Customer> DeleteCustomer(string userName);
     }
     public class CustomerService : ICustomerService
     {
         private Database _context;
-        public CustomerService(Database context)
+        ILogger<ICustomerService> _logger;
+        public CustomerService(Database context, ILogger<ICustomerService> logger)
         {
             _context = context;
+            _logger = logger;
         }
-        public Customer AddCustomer(Customer customer)
+        public async Task<Customer> AddCustomer(Customer customer)
         {
-            if (customer == null) return null;
-            if (GetCustomer(customer.UserName) != null) return null;
-            _context.Customers.Add(customer);
-            _context.SaveChanges();
+            if (customer == null) return customer;
+            try
+            {
+                _logger.LogInformation($"Adding Customer ...");
+                if (GetCustomer(customer.UserName) != null) return customer;
+                await _context.Customers.AddAsync(customer);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                _logger.LogInformation($"Error Adding Customer ...");
+            }
             return customer;
         }
 
-        public Customer DeleteCustomer(string email)
+        public async Task<Customer> DeleteCustomer(string email)
         {
-            var customer = GetCustomer(email);
-            if (customer == null) return null;
-            _context.Customers.Remove(customer);
-            _context.SaveChanges();
+            Customer customer = null;
+            if (string.IsNullOrEmpty(email)) return customer;
+            try
+            {
+                _logger.LogInformation($"Deleting Customer ...");
+                customer = GetCustomer(email);
+                if (customer == null) return customer;
+                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                _logger.LogInformation($"Error Deleting Customer ...");
+            }
+
             return customer;
         }
 
-        public IEnumerable<Customer> GetCustomers()
+        public Task<IEnumerable<Customer>> GetCustomers()
         {
-            return _context.Customers;
+            IEnumerable<Customer> customers = null;
+            try
+            {
+                _logger.LogInformation($"Getting Customers ...");
+                customers = _context.Customers;
+            }
+            catch (Exception)
+            {
+                _logger.LogInformation($"Error Getting Customers ...");
+            }
+            return Task.FromResult(customers);
         }
 
-        public bool Login(Login login)
+        public Task<bool> Login(Login login)
         {
-            if (GetCustomer(login.UserName) == null) return false;
-            return true;
+            bool loggedIn = false;
+            try
+            {
+                _logger.LogInformation($"Logging Customer ...");
+                if (GetCustomer(login.UserName) == null) return Task.FromResult( loggedIn);
+                loggedIn = true;
+            }
+            catch (Exception)
+            {
+                _logger.LogInformation($"Error Logging Customer ...");
+            }
+
+            return Task.FromResult(loggedIn);
         }
         private Customer GetCustomer(string userName)
         {

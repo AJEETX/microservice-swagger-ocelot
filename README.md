@@ -17,10 +17,10 @@
 The repository consists of projects as below:
 
 
-| # |Project Name | Project Type | Project detail | comments | 
-| ---| ---  | ---           | ---          | 
-| 1 | TicketGateway.Api | gateway api | Asp.Net Core2 WebApi   |  gateway to the microservices api |
-| 2 | Identity.Api | Asp.Net Core2 WebApi as microservice  |  create, read, delete customer | 
+| # |Project Name |  Project Type | Project detail | comments | 
+| ---| ---  | ---           | ---       |    --- | 
+| 1 | TicketGateway.Api | gateway api | Asp.Net Core2 WebApi  |  gateway to the microservices api |
+| 2 | Identity.Api | microservice | Asp.Net Core2 WebApi  |  create, read, delete customer | 
 | 3 | Identity.Api.Test |Unit Test | Test Identity.Api |  unit test for Identity.Api project | 
 | 4 | HelpDesk.Api | microservice | Asp.Net Core2 WebApi  |  create, read, delete helpdesk tickets |
 | 5 | HelpDesk.Api.Test | Unit Test | Test  HelpDesk.Api |  unit test for HelpDesk.Api project |  
@@ -42,7 +42,7 @@ The overall objective of the applications :
 
 > Open the solution file named `TicketGateway.Api.sln` through VS2017.
 
-> Within VS2017, in solution exploere right click in the `solution file` , select properties. selected startup project as "Multiple startup Projects" and choose action "Start" for each non-test projects from the dropdown.
+> Within VS2017, in solution exploere right click in the `solution file` , select properties. selected startup project as "Multiple startup Projects" and choose action "Start" for each `non-test` projects from the dropdown.
 
 > Run the solution by pressing they key `F5`
  

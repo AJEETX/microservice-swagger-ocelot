@@ -38,11 +38,22 @@ namespace HelpDesk.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get()
         {
-            _logger.LogInformation($"getting tickets ...");
-            var tickets = await _ticketService.GetTickets();
-            if (tickets == null) NotFound();
-            var ticketsModel = _mapper.Map<IEnumerable<TicketModel>>(tickets);
-            return Ok(ticketsModel);
+            string message = string.Empty;
+            try
+            {
+                _logger.LogInformation($"getting tickets ...");
+                var tickets = await _ticketService.GetTickets();
+                if (tickets == null) NotFound();
+                var ticketsModel = _mapper.Map<IEnumerable<TicketModel>>(tickets);
+                return Ok(ticketsModel);
+            }
+            catch (AggregateException)
+            {
+                message = $"Errored .... shout";
+                _logger.LogInformation(message);
+                return StatusCode(500);
+            }
+
         }
 
         /// <summary>
@@ -56,12 +67,22 @@ namespace HelpDesk.Api.Controllers
         public async Task<IActionResult> Get(int id)
         {
             // No model state validation code here in dotnet ore 2.1, hooray!
+            string message = string.Empty;
+            try
+            {
+                _logger.LogInformation($"getting ticket by id= {id} ...");
+                var ticket = await _ticketService.GetTicketById(id);
+                if (ticket == null) return NotFound();
+                var ticketModel = _mapper.Map<TicketModel>(ticket);
+                return Ok(ticketModel);
+            }
+            catch (AggregateException)
+            {
+                message = $"Errored .... shout";
+                _logger.LogInformation(message);
+                return StatusCode(500);
+            }
 
-            _logger.LogInformation($"getting ticket by id= {id} ...");
-            var ticket = await _ticketService.GetTicketById(id);
-            if (ticket == null) return NotFound();
-            var ticketModel = _mapper.Map<TicketModel>(ticket);
-            return Ok(ticketModel);
         }
 
         /// <summary>
@@ -73,10 +94,21 @@ namespace HelpDesk.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] TicketModel ticketModel)
         {
-            var ticket = _mapper.Map<Ticket>(ticketModel);
-            ticket = await _ticketService.AddTicket(ticket);
-            if (ticket == null) return BadRequest();
-            return CreatedAtAction("Get", new { id = ticket.ID }, ticket);
+            string message = string.Empty;
+            try
+            {
+                var ticket = _mapper.Map<Ticket>(ticketModel);
+                ticket = await _ticketService.AddTicket(ticket);
+                if (ticket == null) return BadRequest();
+                return CreatedAtAction("Get", new { id = ticket.ID }, ticket);
+            }
+            catch (AggregateException)
+            {
+                message = $"Errored .... shout";
+                _logger.LogInformation(message);
+                return StatusCode(500);
+            }
+
         }
 
         /// <summary>
@@ -90,17 +122,27 @@ namespace HelpDesk.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Put(int id, [FromBody] TicketModel ticketModel)
         {
+            string message = string.Empty;
             if (id < 0) return BadRequest();
+            try
+            {
+                var ticket = _mapper.Map<Ticket>(ticketModel);
 
-            var ticket = _mapper.Map<Ticket>(ticketModel);
+                var updatedTicket = await _ticketService.UpdateTicket(id, ticket);
 
-            var updatedTicket =await _ticketService.UpdateTicket(id, ticket);
+                if (updatedTicket == null) return NotFound();
 
-            if (updatedTicket == null) return NotFound();
+                ticketModel = _mapper.Map<TicketModel>(updatedTicket);
 
-            ticketModel = _mapper.Map<TicketModel>(updatedTicket);
+                return Ok(ticketModel);
+            }
+            catch (Exception)
+            {
+                message = $"Errored .... shout";
+                _logger.LogInformation(message);
+                return StatusCode(500);
+            }
 
-            return Ok(ticketModel );
         }
         /// <summary>
         /// Delete a ticket
@@ -111,11 +153,21 @@ namespace HelpDesk.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
+            string message = string.Empty;
             if (id < 0) return BadRequest();
+            try
+            {
+                var ticket = await _ticketService.DeleteTicket(id);
+                if (ticket == null) return NotFound();
+                return new NoContentResult();
+            }
+            catch (Exception)
+            {
+                message = $"Errored .... shout";
+                _logger.LogInformation(message);
+                return StatusCode(500);
+            }
 
-            var ticket = await _ticketService.DeleteTicket(id);
-            if (ticket == null) return NotFound();
-            return new NoContentResult();
         }
     }
 }

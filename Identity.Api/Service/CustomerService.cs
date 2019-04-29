@@ -30,7 +30,7 @@ namespace Identity.Api.Service
             try
             {
                 _logger.LogInformation($"Adding Customer ...");
-                if (GetCustomer(customer.UserName) != null) return customer;
+                if (GetCustomer(customer.UserName) != null) return null;
                 await _context.Customers.AddAsync(customer);
                 await _context.SaveChangesAsync();
             }

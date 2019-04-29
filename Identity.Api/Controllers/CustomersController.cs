@@ -42,7 +42,7 @@ namespace Identity.Api.Controllers
         [HttpGet(Name = "get-customers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CustomerModel>>> Get()
+        public async Task<IActionResult> Get()
         {
             string message = string.Empty;
             try
@@ -53,7 +53,7 @@ namespace Identity.Api.Controllers
                 var customersModel = _mapper.Map<IEnumerable<CustomerModel>>(customers);
                 return Ok(new { Customers = customersModel });
             }
-            catch (Exception)
+            catch (AggregateException)
             {
                 message = $"Errored .... shout";
                 _logger.LogInformation(message);
@@ -70,7 +70,7 @@ namespace Identity.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody]LoginModel loginModel)
+        public async Task<IActionResult> Login([FromBody]LoginModel loginModel)
         {
             // No model state validation code here in dotnet ore 2.1, hooray!
             string message = string.Empty;
@@ -114,7 +114,7 @@ namespace Identity.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("create")]
-        public async Task<ActionResult> Register([FromBody]CustomerModel customerModel)
+        public async Task<IActionResult> Register([FromBody]CustomerModel customerModel)
         {
             // No model state validation code here in dotnet core 2.1, hooray!
             try
@@ -151,7 +151,7 @@ namespace Identity.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{userName}")]
-        public async Task<ActionResult> Delete(string userName)
+        public async Task<IActionResult> Delete(string userName)
         {
             if (string.IsNullOrEmpty(userName)) return BadRequest();
 

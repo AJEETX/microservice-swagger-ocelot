@@ -1,8 +1,8 @@
 # aspnet.core microservices ![GitHub release](https://img.shields.io/github/release/ajeetx/microservice-swagger-ocelot.svg?style=for-the-badge) ![Maintenance](https://img.shields.io/maintenance/yes/2019.svg?style=for-the-badge)
 
-### dotnet2-microservices-swagger
+### dotnet-core2.1-microservices-swagger
 
-[![.Net Framework](https://img.shields.io/badge/DotNet-2.1_Framework-blue.svg?style=plastic)](https://www.microsoft.com/net/download/dotnet-core/2.1)  | ![GitHub language count](https://img.shields.io/github/languages/count/ajeetx/microservice-swagger-ocelot.svg) | ![GitHub top language](https://img.shields.io/github/languages/top/ajeetx/microservice-swagger-ocelot.svg) |![GitHub repo size in bytes](https://img.shields.io/github/repo-size/ajeetx/microservice-swagger-ocelot.svg) 
+[![.Net Framework](https://img.shields.io/badge/DotNet-Core_2.1-blue.svg?style=plastic)](https://www.microsoft.com/net/download/dotnet-core/2.1)  | ![GitHub language count](https://img.shields.io/github/languages/count/ajeetx/microservice-swagger-ocelot.svg) | ![GitHub top language](https://img.shields.io/github/languages/top/ajeetx/microservice-swagger-ocelot.svg) |![GitHub repo size in bytes](https://img.shields.io/github/repo-size/ajeetx/microservice-swagger-ocelot.svg) 
 | --- | ---          | ---        | ---      | 
 
 ---------------------------------------
